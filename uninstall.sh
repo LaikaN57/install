@@ -65,12 +65,7 @@ case "${un}" in
     ;;
   Darwin)
     ostype=macos
-    if [[ "$(uname -m)" == "arm64" ]]
-    then
-      homebrew_prefix_default=/opt/homebrew
-    else
-      homebrew_prefix_default=/usr/local
-    fi
+    homebrew_prefix_default=/usr/local
     realpath() {
       cd "$(dirname "$1")" && echo "$(pwd -P)/$(basename "$1")"
     }
@@ -233,9 +228,9 @@ done
 # Attempt to locate Homebrew unless `--path` is passed
 if [[ "${#homebrew_prefix_candidates[@]}" -eq 0 ]]
 then
-  prefix="$(brew --prefix)"
+  prefix="$(/usr/local/bin/brew --prefix)"
   [[ -n "${prefix}" ]] && homebrew_prefix_candidates+=("${prefix}")
-  prefix="$(command -v brew)" || prefix=""
+  prefix="$(command -v /usr/local/bin/brew)" || prefix=""
   [[ -n "${prefix}" ]] && homebrew_prefix_candidates+=("$(dirname "$(dirname "$(strip_s "${prefix}")")")")
   homebrew_prefix_candidates+=("${homebrew_prefix_default}") # Homebrew default path
   homebrew_prefix_candidates+=("${HOME}/.linuxbrew")         # Linuxbrew default path
